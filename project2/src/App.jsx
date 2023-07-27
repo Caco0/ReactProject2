@@ -1,13 +1,53 @@
+import { useReducer } from 'react';
 import './App.css';
-import { AppContext } from './components/contexts/AppContext';
-import { Div } from './components/Div/index';
+
+const globalState = {
+  title: 'O Título do contexto',
+  body: 'O body do contexto',
+  counter: 0,
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'muda':
+      console.log('chamou muda com', action.payload);
+      return { ...state, title: action.payload };
+    case 'inverter': {
+      console.log('chamou Inverter');
+      const { title } = state;
+      return { ...state, title: title.split('').reverse().join('') };
+    }
+  }
+  console.log('Nenhuma Action Encontrada!');
+  return { ...state };
+};
+
 function App() {
+  const [state, dispatch] = useReducer(reducer, globalState);
+  const { counter, title } = state;
+
   return (
-    <AppContext>
-      <Div />
-    </AppContext>
+    <>
+      <div>
+        <h1>
+          {title} {counter}
+        </h1>
+        <button
+          onClick={() => dispatch({ type: 'muda', payload: new Date().toLocaleString('pt-br') })}
+        >
+          Click
+        </button>
+        <br />
+        <br />
+        <button onClick={() => dispatch({ type: 'inverter' })}>Inverter</button>
+        <br />
+        <br />
+        <button onClick={() => dispatch({ type: '' })}>Sem ação</button>
+      </div>
+    </>
   );
 }
+export default App;
 
 // const Post = ({ post, handleClick }) => {
 //   return (
@@ -83,4 +123,4 @@ function App() {
 //     </>
 //   );
 // }
-export default App;
+// export default App;
